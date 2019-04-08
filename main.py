@@ -5,6 +5,22 @@ from discord.ext import commands
 from itertools import cycle
 import os
 
+
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+sheet_client = gspread.authorize(creds)
+
+sheet = sheet_client.open('Project Creation - Flux Federal Campaign (Responses)').sheet1
+contents = sheet.get_all_records()
+
+print(contents[1]['Completion Date'])
+print("Ok")
+
+
+
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
 DISCORD_CHANNEL = "551999201714634757"
@@ -28,12 +44,3 @@ try:
     client.run(TOKEN)
 finally:
     asyncio.new_event_loop().run_until_complete(client.close())
-
-
-'''
-link = 'https://youtu.be/axJv2UgC0aU'
-url="https://docs.google.com/spreadsheets/u/4/d/e/2PACX-1vSynnae4tvHp3BRCJVXVxdGizZgD8Ebq9DNTWy1NzUfWGZWXjrFKtlcO9Kz0KlcHnyMKzPck6RyEiMP/pubhtml?gid=507423927&single=true"  # Use the local copy instead.
-table = pd.read_html(url,header=1)[0]
-table = table.dropna(axis=0, how='any')
-print(table)
-'''
