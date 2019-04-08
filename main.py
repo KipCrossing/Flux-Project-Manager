@@ -10,9 +10,6 @@ TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 DISCORD_CHANNEL = "551999201714634757"
 
 client = commands.Bot(command_prefix = '!')
-star_emoji = '🌟'
-print(f'loaded client {star_emoji}')
-
 
 async def displayembed():
     await client.wait_until_ready()
@@ -34,6 +31,7 @@ finally:
 
 
 '''
+link = 'https://youtu.be/axJv2UgC0aU'
 url="https://docs.google.com/spreadsheets/u/4/d/e/2PACX-1vSynnae4tvHp3BRCJVXVxdGizZgD8Ebq9DNTWy1NzUfWGZWXjrFKtlcO9Kz0KlcHnyMKzPck6RyEiMP/pubhtml?gid=507423927&single=true"  # Use the local copy instead.
 table = pd.read_html(url,header=1)[0]
 table = table.dropna(axis=0, how='any')
