@@ -9,38 +9,57 @@ import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
-sheet_client = gspread.authorize(creds)
-
-sheet = sheet_client.open('Project Creation - Flux Federal Campaign (Responses)').sheet1
-contents = sheet.get_all_records()
-
-print(contents[1]['Completion Date'])
-print("Ok")
-
 
 
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
-DISCORD_CHANNEL = "551999201714634757"
+DISCORD_CHANNEL = "559620454847873024"
 
 client = commands.Bot(command_prefix = '!')
 
-async def displayembed():
+async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date):
     await client.wait_until_ready()
     embed = discord.Embed(
-    title = "New Project",
-    description = "This is the description",
+    title = p_title,
+    description = desc,
     colour = discord.Colour.blue()
     )
-    embed.set_footer(text = "This is a footer")
+    embed.set_footer(text = footer)
+    embed.set_author(name = v_name)
+    embed.add_field(name = 'Resource',value = resorce)
+    #embed.add_field(name = 'Description of Resources',value = resorce_desc)
+    #embed.add_field(name = 'Completion Date',value = date)
     await client.send_message(discord.Object(DISCORD_CHANNEL), embed = embed)
     await client.close()
     asyncio.get_event_loop().stop()
 
-try:
-    client.loop.create_task(displayembed())
-    client.run(TOKEN)
-finally:
-    asyncio.new_event_loop().run_until_complete(client.close())
+
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+sheet_client = gspread.authorize(creds)
+
+sheet = sheet_client.open('Project Creation').sheet1
+contents = sheet.get_all_records()
+
+
+rown = 1
+for row in contents:
+    rown+=1
+    if row['Discord'] == '':
+        print(row)
+        sheet.update_cell(rown,9,'1')
+        print(row['Project Title'])
+
+        try:
+            client.loop.create_task(displayembed(
+            row['Project Title'],
+            row['Description of Project'],
+            row['Key Objective'],
+            row['Volunteer name'],
+            row['Resources Needed '],
+            row['Description of Resources Needed'],
+            row['Completion Date']
+            ))
+            client.run(TOKEN)
+        finally:
+            asyncio.new_event_loop().run_until_complete(client.close())
