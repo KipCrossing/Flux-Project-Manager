@@ -25,7 +25,7 @@ colour_dict = {
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
 
-async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date):
+async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date,project_num):
     await client.wait_until_ready()
     embed = discord.Embed(
     title = p_title,
@@ -37,6 +37,7 @@ async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date):
     embed.add_field(name = 'Resource',value = resorce)
     embed.add_field(name = 'Description of Resources',value = resorce_desc)
     embed.add_field(name = 'Completion Date',value = date)
+    embed.add_field(name = 'Project Number',value = project_num)
     await client.send_message(discord.Object(DISCORD_CHANNEL), embed = embed)
     #await client.send_message(discord.Object(DISCORD_CHANNEL), "**Project Description**:\n"desc)
     await client.close()
@@ -67,7 +68,8 @@ for row in contents:
             row['Volunteer name'],
             row['Resources Needed '],
             row['Description of Resources Needed'],
-            row['Completion Date']
+            row['Completion Date'],
+            rown
             ))
             client.run(TOKEN)
         finally:
