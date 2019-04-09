@@ -17,19 +17,28 @@ DISCORD_CHANNEL = "559620454847873024"
 
 client = commands.Bot(command_prefix = '!')
 
+colour_dict = {
+'Enhance General Awareness': discord.Colour.red(),
+'Empower Volunteers to Action': discord.Colour.green(),
+'Boost Active Membership' : discord.Colour.purple(),
+'Develop Candidate Pipeline' : discord.Colour.orange(),
+'Document & Codify Our Processes' : discord.Colour.blue()
+}
+
 async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date):
     await client.wait_until_ready()
     embed = discord.Embed(
     title = p_title,
     description = desc,
-    colour = discord.Colour.blue()
+    colour = colour_dict[footer]
     )
     embed.set_footer(text = footer)
     embed.set_author(name = v_name)
     embed.add_field(name = 'Resource',value = resorce)
-    #embed.add_field(name = 'Description of Resources',value = resorce_desc)
-    #embed.add_field(name = 'Completion Date',value = date)
+    embed.add_field(name = 'Description of Resources',value = resorce_desc)
+    embed.add_field(name = 'Completion Date',value = date)
     await client.send_message(discord.Object(DISCORD_CHANNEL), embed = embed)
+    #await client.send_message(discord.Object(DISCORD_CHANNEL), "**Project Description**:\n"desc)
     await client.close()
     asyncio.get_event_loop().stop()
 
@@ -47,7 +56,7 @@ for row in contents:
     rown+=1
     if row['Discord'] == '':
         print(row)
-        sheet.update_cell(rown,9,'1')
+        sheet.update_cell(rown,9,'Posted')
         print(row['Project Title'])
 
         try:
@@ -63,3 +72,4 @@ for row in contents:
             client.run(TOKEN)
         finally:
             asyncio.new_event_loop().run_until_complete(client.close())
+        break
