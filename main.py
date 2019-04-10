@@ -13,7 +13,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
-DISCORD_CHANNEL = "559620454847873024"
+DISCORD_CHANNEL = "565421685101035530"
 
 client = commands.Bot(command_prefix = '!')
 
