@@ -1,13 +1,17 @@
-import pandas as pd
 import asyncio
 import discord
 from discord.ext import commands
 from itertools import cycle
 import os
 
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+sheet_client = gspread.authorize(creds)
+
 
 
 
@@ -25,53 +29,66 @@ colour_dict = {
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
 
-async def displayembed(p_title,desc,footer,v_name,resorce,resorce_desc,date,project_num):
-    await client.wait_until_ready()
+@client.command()
+async def project(*args):
+    try:
+        if len(args) == 1:
+            if int(args[0]) > 0:
+                sheet = sheet_client.open('Project Creation').sheet1
+                contents = sheet.get_all_records()
+                if contents[int(args[0])]['Discord'] != '':
+                    rown = int(args[0])-1
+
+                    await client.say(embed = make_embed(contents[rown],rown+1))
+    except Exception as e:
+        print(f'Got exception: {str(e)}')
+        await client.say('Bad command :(')
+
+def make_embed(project_info, project_num):
     embed = discord.Embed(
-    title = p_title,
-    description = desc,
-    colour = colour_dict[footer]
+    title = project_info['Project Title'],
+    description = project_info['Description of Project'],
+    colour = colour_dict[project_info['Key Objective']]
     )
-    embed.set_footer(text = footer)
-    embed.set_author(name = v_name)
-    embed.add_field(name = 'Resource',value = resorce)
-    embed.add_field(name = 'Description of Resources',value = resorce_desc)
-    embed.add_field(name = 'Completion Date',value = date)
+    embed.set_footer(text = project_info['Key Objective'])
+    embed.set_author(name = project_info['Volunteer name'])
+    embed.add_field(name = 'Resource',value = project_info['Resources Needed '])
+    embed.add_field(name = 'Description of Resources',value = project_info['Description of Resources Needed'])
+    embed.add_field(name = 'Completion Date',value = project_info['Completion Date'])
     embed.add_field(name = 'Project Number',value = project_num)
-    await client.send_message(discord.Object(DISCORD_CHANNEL), embed = embed)
-    #await client.send_message(discord.Object(DISCORD_CHANNEL), "**Project Description**:\n"desc)
-    await client.close()
-    asyncio.get_event_loop().stop()
+    return embed
 
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
-sheet_client = gspread.authorize(creds)
-
-sheet = sheet_client.open('Project Creation').sheet1
-contents = sheet.get_all_records()
 
 
-rown = 1
-for row in contents:
-    rown+=1
-    if row['Discord'] == '':
-        print(row)
-        sheet.update_cell(rown,9,'Posted')
-        print(row['Project Title'])
 
+
+
+
+
+async def check_sheet():
+    await client.wait_until_ready()
+    print('Ready!')
+    while not client.is_closed:
         try:
-            client.loop.create_task(displayembed(
-            row['Project Title'],
-            row['Description of Project'],
-            row['Key Objective'],
-            row['Volunteer name'],
-            row['Resources Needed '],
-            row['Description of Resources Needed'],
-            row['Completion Date'],
-            rown
-            ))
-            client.run(TOKEN)
-        finally:
-            asyncio.new_event_loop().run_until_complete(client.close())
-        break
+            sheet = sheet_client.open('Project Creation').sheet1
+            contents = sheet.get_all_records()
+            rown = 1
+            for row in contents:
+                rown+=1
+                if row['Discord'] == '':
+                    await client.send_message(discord.Object(DISCORD_CHANNEL), embed = make_embed(row,rown))
+                    print(row)
+                    sheet.update_cell(rown,9,'Posted')
+                    print(row['Project Title'])
+            await asyncio.sleep(60)
+        except Exception as e:
+            print(f'Got exception: {str(e)}')
+
+
+
+try:
+    client.loop.create_task(check_sheet())
+    client.run(TOKEN)
+finally:
+    asyncio.new_event_loop().run_until_complete(client.close())
