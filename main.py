@@ -9,9 +9,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
-sheet_client = gspread.authorize(creds)
-
 
 
 
@@ -20,6 +17,15 @@ TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 DISCORD_CHANNEL = "565421685101035530"
 
 client = commands.Bot(command_prefix = '!')
+
+
+channel_dict = {
+'Enhance General Awareness': '563627640582569984',
+'Empower Volunteers to Action': '563628133215895576',
+'Boost Active Membership' : '563628133215895576',
+'Develop Candidate Pipeline' : '561468141625016322',
+'Document & Codify Our Processes' : '563942886685802526'
+}
 
 colour_dict = {
 'Enhance General Awareness': discord.Colour.red(),
@@ -46,7 +52,7 @@ async def project(*args):
 
 def make_embed(project_info, project_num):
     embed = discord.Embed(
-    title = project_info['Project Title'],
+    title = project_info['Project Nickname'] + '\n' + project_info['Project Subtitle'] ,
     description = project_info['Description of Project'],
     colour = colour_dict[project_info['Key Objective']]
     )
@@ -54,14 +60,10 @@ def make_embed(project_info, project_num):
     embed.set_author(name = project_info['Volunteer name'])
     embed.add_field(name = 'Resource',value = project_info['Resources Needed '])
     embed.add_field(name = 'Description of Resources',value = project_info['Description of Resources Needed'])
-    embed.add_field(name = 'Completion Date',value = project_info['Completion Date'])
     embed.add_field(name = 'Project Number',value = project_num)
+    embed.add_field(name = 'Expected outcomes',value = project_info['Expected outcomes'])
+    embed.add_field(name = 'Completion Date',value = project_info['Completion Date'])
     return embed
-
-
-
-
-
 
 
 
@@ -71,16 +73,22 @@ async def check_sheet():
     print('Ready!')
     while not client.is_closed:
         try:
-            sheet = sheet_client.open('Project Creation').sheet1
+            creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+            sheet_client = gspread.authorize(creds)
+            sheet = sheet_client.open('Project Data').sheet1
             contents = sheet.get_all_records()
             rown = 1
             for row in contents:
                 rown+=1
                 if row['Discord'] == '':
-                    await client.send_message(discord.Object(DISCORD_CHANNEL), embed = make_embed(row,rown))
+                    Embed = make_embed(row,rown)
+                    await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
+                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
+                    message = 'Please read the above project and ask to collaborate if you are interested.'
+                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message)
                     print(row)
-                    sheet.update_cell(rown,9,'Posted')
-                    print(row['Project Title'])
+                    sheet.update_cell(rown,11,str(rown))
+                    print(row['Project Nickname'])
             await asyncio.sleep(60)
         except Exception as e:
             print(f'Got exception: {str(e)}')
