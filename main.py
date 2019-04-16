@@ -36,10 +36,6 @@ colour_dict = {
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
 
-@client.event
-async def on_ready():
-    await client.send_message(discord.Object(ERROR_CHANNEL), "Bot Alive!")
-
 @client.command()
 async def project(*args):
     try:
@@ -85,7 +81,6 @@ async def check_sheet():
             contents = sheet.get_all_records()
             rown = 1
             for row in contents:
-                print(row['Discord'])
                 rown+=1
                 if row['Discord'] == '':
                     Embed = make_embed(row,rown)
