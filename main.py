@@ -46,7 +46,7 @@ async def project(*args):
                 contents = sheet.get_all_records()
                 if contents[int(args[0])]['Discord'] != '':
                     rown = int(args[0])-2
-                    await client.say(embed = make_embed(contents[rown],int(args[0])))
+                    await client.say(embed = make_embed(contents[rown],str(args[0])))
     except Exception as e:
         print(f'Got exception: {str(e)}')
         await client.say('Bad command :(')
