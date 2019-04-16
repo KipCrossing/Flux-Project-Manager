@@ -39,13 +39,14 @@ colour_dict = {
 async def project(*args):
     try:
         if len(args) == 1:
-            if int(args[0]) > 0:
-                sheet = sheet_client.open('Project Creation').sheet1
+            if int(args[0]) > 1:
+                creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+                sheet_client = gspread.authorize(creds)
+                sheet = sheet_client.open('Project Data').sheet1
                 contents = sheet.get_all_records()
                 if contents[int(args[0])]['Discord'] != '':
-                    rown = int(args[0])-1
-
-                    await client.say(embed = make_embed(contents[rown],rown+1))
+                    rown = int(args[0])-2
+                    await client.say(embed = make_embed(contents[rown],int(args[0])))
     except Exception as e:
         print(f'Got exception: {str(e)}')
         await client.say('Bad command :(')
