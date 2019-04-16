@@ -35,9 +35,10 @@ colour_dict = {
 'Develop Candidate Pipeline' : discord.Colour.orange(),
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
-@client.command()
-async def test():
-    await client.send_message(discord.Object(ERROR_CHANNEL), "Test passed")
+
+@client.event
+async def on_ready():
+    await client.send_message(discord.Object(ERROR_CHANNEL), "Bot Alive!")
 
 @client.command()
 async def project(*args):
