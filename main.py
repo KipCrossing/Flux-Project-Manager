@@ -15,6 +15,7 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
 DISCORD_CHANNEL = "565421685101035530"
+ERROR_CHANNEL = "562605716591083560"
 
 client = commands.Bot(command_prefix = '!')
 
@@ -34,9 +35,9 @@ colour_dict = {
 'Develop Candidate Pipeline' : discord.Colour.orange(),
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
-@client.command(pass_context = True)
-async def test(author, message):
-    await message.channel.send('I heard you! {0.name}'.format(author))
+@client.command()
+async def test():
+    await client.send_message(discord.Object(ERROR_CHANNEL), "Test passed")
 
 @client.command()
 async def project(*args):
@@ -83,6 +84,7 @@ async def check_sheet():
             contents = sheet.get_all_records()
             rown = 1
             for row in contents:
+                print(row['Discord'])
                 rown+=1
                 if row['Discord'] == '':
                     Embed = make_embed(row,rown)
@@ -96,6 +98,7 @@ async def check_sheet():
             await asyncio.sleep(60)
         except Exception as e:
             print(f'Got exception: {str(e)}')
+            await client.send_message(discord.Object(ERROR_CHANNEL), e)
 
 
 
