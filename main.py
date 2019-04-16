@@ -34,6 +34,9 @@ colour_dict = {
 'Develop Candidate Pipeline' : discord.Colour.orange(),
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
+@client.command(pass_context = True)
+async def test(author, message):
+    await message.channel.send('I heard you! {0.name}'.format(author))
 
 @client.command()
 async def project(*args):
