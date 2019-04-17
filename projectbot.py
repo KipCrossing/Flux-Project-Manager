@@ -45,7 +45,7 @@ async def project(*args):
                 sheet_client = gspread.authorize(creds)
                 sheet = sheet_client.open('Project Data').sheet1
                 contents = sheet.get_all_records()
-                if contents[int(args[0])]['Discord'] != '':
+                if contents[int(args[0])-2]['Discord'] != '':
                     rown = int(args[0])-2
                     await client.say(embed = make_embed(contents[rown],str(args[0])))
     except Exception as e:
@@ -86,8 +86,9 @@ async def check_sheet():
                     Embed = make_embed(row,rown)
                     await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
                     await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
-                    message = 'Please read the above project and ask to collaborate if you are interested.'
-                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message)
+                    message = 'Please read the above project and ask to collaborate if you are interested. \n'
+                    message2 = 'The project can also be found at: https://trello.com/b/FM1sZEI7/volunteer-initiative-projects'
+                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message + message2)
                     print(row)
                     sheet.update_cell(rown,11,str(rown))
                     print(row['Project Nickname'])
