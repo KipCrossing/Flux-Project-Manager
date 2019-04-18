@@ -6,7 +6,7 @@ while true; do
   git pull
   echo "Run projectbot.py"
   python3 projectbot.py &
-  sleep 295
+  sleep 600
   pkill -9 -f projectbot.py
   echo "Killed and loop"
   sleep 5
