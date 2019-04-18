@@ -9,7 +9,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
+sheet_client = gspread.authorize(creds)
+sheet = sheet_client.open('Project Data').sheet1
+contents = sheet.get_all_records()
 
 
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
@@ -41,10 +44,6 @@ async def project(*args):
     try:
         if len(args) == 1:
             if int(args[0]) > 1:
-                creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
-                sheet_client = gspread.authorize(creds)
-                sheet = sheet_client.open('Project Data').sheet1
-                contents = sheet.get_all_records()
                 if contents[int(args[0])-2]['Discord'] != '':
                     rown = int(args[0])-2
                     await client.say(embed = make_embed(contents[rown],str(args[0])))
@@ -71,26 +70,23 @@ def make_embed(project_info, project_num):
 
 
 async def check_sheet():
+    posted_list = []
     await client.wait_until_ready()
     print('Ready!')
     while not client.is_closed:
         try:
-            creds = ServiceAccountCredentials.from_json_keyfile_name('client_secrete.json',scope)
-            sheet_client = gspread.authorize(creds)
-            sheet = sheet_client.open('Project Data').sheet1
-            contents = sheet.get_all_records()
             rown = 1
             for row in contents:
                 rown+=1
-                if row['Discord'] == '':
+                if row['Discord'] == '' and not rown in posted_list:
                     Embed = make_embed(row,rown)
                     await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
                     await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
                     message = 'Please read the above project and ask to collaborate if you are interested. \n'
-                    message2 = 'The project can also be found at: https://trello.com/b/FM1sZEI7/volunteer-initiative-projects'
+                    message2 = 'The project can also be found at: <https://trello.com/b/FM1sZEI7/volunteer-initiative-projects>'
                     await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message + message2)
-                    print(row)
                     sheet.update_cell(rown,11,str(rown))
+                    posted_list.append(rown)
                     print(row['Project Nickname'])
             await asyncio.sleep(60)
         except Exception as e:
