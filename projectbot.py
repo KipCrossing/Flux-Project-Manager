@@ -72,6 +72,7 @@ def make_embed(project_info, project_num):
 async def check_sheet():
     posted_list = []
     await client.wait_until_ready()
+    await client.remove_command('help')
     print('Ready!')
     while not client.is_closed:
         try:
