@@ -52,6 +52,20 @@ async def project(*args):
         await client.say('Bad command :(')
         await client.send_message(discord.Object(ERROR_CHANNEL), str(e))
 
+
+#Delete messages
+@client.command(pass_context = True)
+async def clear(ctx, amount = 100):
+    if str(ctx.message.author) == 'KipDawgz#8789':
+        channel = ctx.message.channel
+        messages = []
+        counter = 0
+        async for message in client.logs_from(channel, limit=int(amount)):
+            messages.append(message)
+        await client.delete_messages(messages)
+        await client.say('Messages deleted')
+
+
 def make_embed(project_info, project_num):
     embed = discord.Embed(
     title = project_info['Project Nickname'] + '\n' + project_info['Project Subtitle'] ,
