@@ -50,6 +50,7 @@ async def project(*args):
     except Exception as e:
         print(f'Got exception: {str(e)}')
         await client.say('Bad command :(')
+        await client.send_message(discord.Object(ERROR_CHANNEL), str(e))
 
 def make_embed(project_info, project_num):
     embed = discord.Embed(
