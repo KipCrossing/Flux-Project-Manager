@@ -22,6 +22,19 @@ ERROR_CHANNEL = "562605716591083560"
 
 client = commands.Bot(command_prefix = '!')
 
+resorce_contact = {
+'Funding' : '555985616416931841',
+'Social Media' : '313952769541406720',
+'Campaign Materials' : '565085841223974912',
+'Permissions' : '199731686093619200',
+'Other Volunteers' : '',
+'Nothing' : ''
+}
+
+#user = await client.get_user_info("449910203220099073")
+#await client.send_message(user, " hello , i'm awake")
+
+
 
 channel_dict = {
 'Enhance General Awareness': '563627640582569984',
@@ -94,6 +107,14 @@ async def check_sheet():
             for row in contents:
                 rown+=1
                 if row['Discord'] == '' and not rown in posted_list:
+                    resorces_list = row['Resources Needed '].split(", ")
+                    print(resorces_list)
+                    for res in resorces_list:
+                        if resorce_contact[res] != '':
+                            user = await client.get_user_info(resorce_contact[res])
+                            await client.send_message(user, "A new project is requesting resources that may require your attention.\
+                             \nPlease see the project channel\
+                             \n**Project Name:** " +str(row['Project Nickname']))
                     Embed = make_embed(row,rown)
                     await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
                     await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
