@@ -2,12 +2,11 @@ function myFunction() {
   var resorce_contact = {
     'Funding' : 'ben.rushton@voteflux.org',
     'Social Media' : 'ben.ballingall@voteflux.org',
-    'Campaign Materials' : 'joanne.cotterill@voteflux.org',
+    'Campaign Materials' : 'daithi.ogliasain@voteflux.org,joanne.cotterill@voteflux.org',
     'Permissions' : 'max.kaye@voteflux.org',
     'Other Volunteers' : 'joanne.cotterill@voteflux.org',
     'Nothing' : 'daithi.ogliasain@voteflux.org'
   };
-
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var data = ss.getSheetByName("Form Responses 1").getDataRange().getValues();
   for (var j = 1; j < data.length; j++) {
@@ -21,14 +20,16 @@ function myFunction() {
       resorces_list = resorces.split(", ");
       description_resources = data[j][7];
       outcomes = data[j][8];
-      var body = "Resorces are requested for project : \n" + project_nickname
-      + "\n" + subtitle + "\nBy: " + volunteer + "\nDescription: " + description
-      + "\nObjective: " + objective
-      + "\nResorces Requested: " + resorces
+      var body = "Resources are requested for project : \n"
+      + "Project Number: " + (j+1)
+      + "\n"+ project_nickname
+      + "\n" + subtitle + "\n\nBy: " + volunteer + "\n\nDescription: " + description
+      + "\n\nObjective: " + objective
+      + "\n\nResources Requested: " + resorces
       + "\n" + description_resources
       + "\nExpected Outcomes: " + outcomes
-      + "\n\n\n";
-      var subject = "[AUTO] New Project: " + project_nickname
+      + "\n\nGo to the flux discord to discuss this project: discord.io/FluxParty";
+      var subject = "[AUTO] New Project: " +(j+1)+" "+ project_nickname
       Logger.log(subject);
       Logger.log(body);
       for(var i = 0; i < resorces_list.length; i++) {
