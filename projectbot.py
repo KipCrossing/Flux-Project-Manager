@@ -17,7 +17,7 @@ contents = sheet.get_all_records()
 
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
-DISCORD_CHANNEL = "565421685101035530"
+DISCORD_CHANNEL = "562897002107764736"
 ERROR_CHANNEL = "562605716591083560"
 
 client = commands.Bot(command_prefix = '!')
@@ -117,10 +117,10 @@ async def check_sheet():
                              \n**Project Name:** " +str(row['Project Nickname']))
                     Embed = make_embed(row,rown)
                     await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
-                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
+                    # await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
                     message = 'Please read the above project and ask to collaborate if you are interested. \n'
                     message2 = 'The project can also be found at: <https://trello.com/b/FM1sZEI7/volunteer-initiative-projects>'
-                    await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message + message2)
+                    # await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message + message2)
                     sheet.update_cell(rown,11,str(rown))
                     posted_list.append(rown)
                     print(row['Project Nickname'])
