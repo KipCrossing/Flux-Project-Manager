@@ -14,7 +14,6 @@ sheet_client = gspread.authorize(creds)
 sheet = sheet_client.open('Project Data').sheet1
 contents = sheet.get_all_records()
 
-
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
 DISCORD_CHANNEL = "562897002107764736"
@@ -52,31 +51,19 @@ colour_dict = {
 'Document & Codify Our Processes' : discord.Colour.blue()
 }
 
-@client.command()
-async def project(*args):
+@client.command(pass_context = True)
+async def project(ctx, *args):
+    channel = ctx.message.channel
     try:
         if len(args) == 1:
             if int(args[0]) > 1:
                 if contents[int(args[0])-2]['Discord'] != '':
                     rown = int(args[0])-2
-                    await client.say(embed = make_embed(contents[rown],str(args[0])))
+                    await channel.send(embed = make_embed(contents[rown],str(args[0])))
     except Exception as e:
         print(f'Got exception: {str(e)}')
-        await client.say('Bad command :(')
-        await client.send_message(discord.Object(ERROR_CHANNEL), str(e))
-
-
-#Delete messages
-@client.command(pass_context = True)
-async def clear(ctx, amount = 100):
-    if str(ctx.message.author) == 'KipDawgz#8789':
-        channel = ctx.message.channel
-        messages = []
-        counter = 0
-        async for message in client.logs_from(channel, limit=int(amount)):
-            messages.append(message)
-        await client.delete_messages(messages)
-        await client.say('Messages deleted')
+        await channel.send('Bad command :(')
+        # await client.send_message(discord.Object(ERROR_CHANNEL), str(e))
 
 
 def make_embed(project_info, project_num):
