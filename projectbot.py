@@ -16,8 +16,8 @@ contents = sheet.get_all_records()
 
 TOKEN = os.environ.get('FM_DISCORD_BOT_TOKEN', None)
 
-DISCORD_CHANNEL = "562897002107764736"
-ERROR_CHANNEL = "562605716591083560"
+DISCORD_CHANNEL = 562897002107764736
+ERROR_CHANNEL = 562605716591083560
 
 client = commands.Bot(command_prefix = '!')
 
@@ -30,8 +30,6 @@ resorce_contact = {
 'Nothing' : ''
 }
 
-#user = await client.get_user_info("449910203220099073")
-#await client.send_message(user, " hello , i'm awake")
 
 
 
@@ -54,6 +52,7 @@ colour_dict = {
 @client.command(pass_context = True)
 async def project(ctx, *args):
     channel = ctx.message.channel
+    error_channel = client.get_channel(ERROR_CHANNEL)
     try:
         if len(args) == 1:
             if int(args[0]) > 1:
@@ -63,7 +62,7 @@ async def project(ctx, *args):
     except Exception as e:
         print(f'Got exception: {str(e)}')
         await channel.send('Bad command :(')
-        # await client.send_message(discord.Object(ERROR_CHANNEL), str(e))
+        await error_channel.send(str(e))
 
 
 def make_embed(project_info, project_num):
@@ -88,7 +87,11 @@ async def check_sheet():
     posted_list = []
     await client.wait_until_ready()
     print('Ready!')
-    while not client.is_closed:
+    channel = client.get_channel(DISCORD_CHANNEL)
+    error_channel = client.get_channel(ERROR_CHANNEL)
+
+    while not client.is_closed():
+        print("YES")
         try:
             rown = 1
             for row in contents:
@@ -99,22 +102,23 @@ async def check_sheet():
                     for res in resorces_list:
                         if resorce_contact[res] != '':
                             user = await client.get_user_info(resorce_contact[res])
-                            await client.send_message(user, "A new project is requesting resources that may require your attention.\
-                             \nPlease see the project channel\
-                             \n**Project Name:** " +str(row['Project Nickname']))
+                            # await client.send_message(user, "A new project is requesting resources that may require your attention.\
+                            #  \nPlease see the project channel\
+                            #  \n**Project Name:** " +str(row['Project Nickname']))
+
                     Embed = make_embed(row,rown)
-                    await client.send_message(discord.Object(DISCORD_CHANNEL), embed =Embed)
-                    # await client.send_message(discord.Object(channel_dict[row['Key Objective']]),embed =Embed)
-                    message = 'Please read the above project and ask to collaborate if you are interested. \n'
-                    message2 = 'The project can also be found at: <https://trello.com/b/FM1sZEI7/volunteer-initiative-projects>'
-                    # await client.send_message(discord.Object(channel_dict[row['Key Objective']]),message + message2)
+                    await channel.send(embed=Embed)
+
+                    message = 'Please read the above project and ask to collaborate if you are interested.'
+                    await channel.send(message)
+
                     sheet.update_cell(rown,11,str(rown))
                     posted_list.append(rown)
                     print(row['Project Nickname'])
             await asyncio.sleep(60)
         except Exception as e:
             print(f'Got exception: {str(e)}')
-            await client.send_message(discord.Object(ERROR_CHANNEL), e)
+            await error_channel.send(str(e))
 
 
 
@@ -122,4 +126,5 @@ try:
     client.loop.create_task(check_sheet())
     client.run(TOKEN)
 finally:
-    asyncio.new_event_loop().run_until_complete(client.close())
+    # asyncio.new_event_loop().run_until_complete(client.close())
+    print('fin')
