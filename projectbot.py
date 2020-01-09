@@ -99,12 +99,12 @@ async def check_sheet():
                 if row['Discord'] == '' and not rown in posted_list:
                     resorces_list = row['Resources Needed '].split(", ")
                     print(resorces_list)
-                    for res in resorces_list:
-                        if resorce_contact[res] != '':
-                            user = await client.get_user_info(resorce_contact[res])
-                            # await client.send_message(user, "A new project is requesting resources that may require your attention.\
-                            #  \nPlease see the project channel\
-                            #  \n**Project Name:** " +str(row['Project Nickname']))
+                    # for res in resorces_list:
+                    #     if resorce_contact[res] != '':
+                    #         user = await client.get_user_info(resorce_contact[res])
+                    #         # await client.send_message(user, "A new project is requesting resources that may require your attention.\
+                    #         #  \nPlease see the project channel\
+                    #         #  \n**Project Name:** " +str(row['Project Nickname']))
 
                     Embed = make_embed(row,rown)
                     await channel.send(embed=Embed)
