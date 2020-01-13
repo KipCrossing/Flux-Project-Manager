@@ -46,7 +46,11 @@ colour_dict = {
 'Empower Volunteers to Action': discord.Colour.green(),
 'Boost Active Membership' : discord.Colour.purple(),
 'Develop Candidate Pipeline' : discord.Colour.orange(),
-'Document & Codify Our Processes' : discord.Colour.blue()
+'Document & Codify Our Processes' : discord.Colour.blue(), ###
+'Launch Tech': discord.Colour.blue(),
+'Team & Organization Building': discord.Colour.green(),
+'Scaling Membership' : discord.Colour.yellow(),
+'Prepare Candidates' : discord.Colour.red(),
 }
 
 @client.command(pass_context = True)
