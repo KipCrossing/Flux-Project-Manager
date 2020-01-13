@@ -49,7 +49,7 @@ colour_dict = {
 'Document & Codify Our Processes' : discord.Colour.blue(), ###
 'Launch Tech': discord.Colour.blue(),
 'Team & Organization Building': discord.Colour.green(),
-'Scaling Membership' : discord.Colour.yellow(),
+'Scaling Membership' : discord.Colour.purple(),
 'Prepare Candidates' : discord.Colour.red()
 }
 
