@@ -50,7 +50,7 @@ colour_dict = {
 'Launch Tech': discord.Colour.blue(),
 'Team & Organization Building': discord.Colour.green(),
 'Scaling Membership' : discord.Colour.yellow(),
-'Prepare Candidates' : discord.Colour.red(),
+'Prepare Candidates' : discord.Colour.red()
 }
 
 @client.command(pass_context = True)
