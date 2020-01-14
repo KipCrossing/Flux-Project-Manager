@@ -54,6 +54,23 @@ colour_dict = {
 }
 
 @client.command(pass_context = True)
+async def active(ctx, *args):
+    channel = ctx.message.channel
+    error_channel = client.get_channel(ERROR_CHANNEL)
+    try:
+        rown = 0
+        for row in contents:
+            if row['Status'] == 'Active':
+                print(rown)
+                await channel.send(embed = make_embed(contents[rown],str(rown+2)))
+            rown+=1
+    except Exception as e:
+        print(f'Got exception: {str(e)}')
+        await channel.send('Bad command :(')
+        await error_channel.send(str(e))
+
+
+@client.command(pass_context = True)
 async def project(ctx, *args):
     channel = ctx.message.channel
     error_channel = client.get_channel(ERROR_CHANNEL)
