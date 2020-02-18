@@ -57,7 +57,6 @@ colour_dict = {
 @client.command(pass_context=True)
 async def help(ctx, *args):
     channel = ctx.message.channel
-    await channel.send('Help needed')
     descrip = '**!project `[num]`** - Displays the project with assigned number'
     descrip += '\n**!active** - Shows all active projects'
     embed = discord.Embed(
